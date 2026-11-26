@@ -8,7 +8,8 @@ const approved = {
   contact: 'https://forms.gle/Mmrmu9xTuYpot9Dz6',
   notebook: 'https://pienipisara2.thebase.in/items/166793310',
   operator: 'https://toma-oshikatsubu.pages.dev/',
-  feedback: 'https://github.com/morikyun/toma-oto-mikuji/issues/new/choose',
+  feedbackReadme: 'https://github.com/morikyun/toma-oto-mikuji/blob/main/README.md',
+  feedbackIssues: 'https://github.com/morikyun/toma-oto-mikuji/issues',
   streams: 'https://www.youtube.com/@TomaSource/streams',
   toma: 'https://www.tunecore.co.jp/artists/tomasource?lang=ja',
   kamimusuhi: 'https://www.tunecore.co.jp/artists/kamimusuhi',
@@ -16,6 +17,10 @@ const approved = {
   cloudflareCookies: 'https://developers.cloudflare.com/fundamentals/reference/policies-compliances/cloudflare-cookies/',
   googlePrivacy: 'https://policies.google.com/privacy?hl=ja'
 };
+const approvedFeedbackForms = [
+  '01-change.yml', '02-new-page.yml', '03-problem.yml',
+  '04-usability.yml', '05-feature.yml', '06-question.yml'
+].map(template => `https://github.com/morikyun/toma-oto-mikuji/issues/new?template=${template}`);
 
 // Exact song-to-release pairs prevent links to another artist on the same host.
 const releases = [
@@ -55,23 +60,29 @@ function checkStaticLinks(source, allowed, label) {
   }
 }
 
-export function checkTrustedLinks({index, privacy, notFound, notebook, app, songs}) {
+export function checkTrustedLinks({index, privacy, notFound, feedback, notebook, app, songs}) {
   const contact = anchors(privacy).filter(link => link.classes.includes('privacy-contact-link'));
   assert.deepEqual(contact.map(link => link.href), [approved.contact], 'お問い合わせフォームの変更には運営者の確認が必要です。');
-  for (const [label, source] of [['トップ', index], ['プライバシー', privacy], ['404', notFound]]) {
-    const footer = source.match(/<p\b[^>]*class=["']footer-powered["'][^>]*>([\s\S]*?)<\/p>/)?.[1] || '';
-    assert.deepEqual(anchors(footer).map(link => link.href), [approved.operator], `${label}: Powered byの変更には運営者の確認が必要です。`);
+  for (const [label, source] of [['トップ', index], ['プライバシー', privacy], ['404', notFound], ['ご要望', feedback]]) {
+    const footer = source.match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/)?.[1] || '';
+    const powered = footer.match(/<p\b[^>]*class=["']footer-powered["'][^>]*>([\s\S]*?)<\/p>/)?.[1] || '';
+    assert.deepEqual(anchors(powered).map(link => link.href), [approved.operator], `${label}: Powered byの変更には運営者の確認が必要です。`);
+    const feedbackLinks = anchors(footer).filter(link => link.classes.includes('footer-feedback'));
+    assert.deepEqual(feedbackLinks.map(link => link.href), ['/feedback/'], `${label}: フッターのご要望リンクはサイト内の案内ページにしてください。`);
   }
+  const formLinks = anchors(feedback).filter(link => link.classes.includes('feedback-form-link'));
+  assert.deepEqual(formLinks.map(link => link.href).sort(), [...approvedFeedbackForms].sort(), 'ご要望フォームは承認済みの6種類のURLと一致する必要があります。');
   assert.equal(objectURL(notebook, 'NOTEBOOK'), approved.notebook, 'ノートの商品ページの変更には運営者の確認が必要です。');
   assert.equal(objectURL(notebook, 'MOON_STREAMS'), approved.streams, '公式配信チャンネルの変更には運営者の確認が必要です。');
   assert.ok(anchors(index).some(link => link.href === approved.toma), '公式配信一覧のリンクが見つかりません。');
   for (const url of [approved.toma, approved.kamimusuhi]) {
     assert.ok(anchors(app).some(link => link.href === url), '公式アーティストのリンクが見つかりません。');
   }
-  checkStaticLinks(index, [approved.operator, approved.toma, approved.feedback], 'トップ');
+  checkStaticLinks(index, [approved.operator, approved.toma], 'トップ');
   checkStaticLinks(app, [approved.toma, approved.kamimusuhi], '音みくじ');
-  checkStaticLinks(privacy, [approved.contact, approved.operator, approved.cloudflarePrivacy, approved.cloudflareCookies, approved.googlePrivacy, approved.feedback], 'プライバシー');
-  checkStaticLinks(notFound, [approved.operator, approved.feedback], '404');
+  checkStaticLinks(privacy, [approved.contact, approved.operator, approved.cloudflarePrivacy, approved.cloudflareCookies, approved.googlePrivacy], 'プライバシー');
+  checkStaticLinks(notFound, [approved.operator], '404');
+  checkStaticLinks(feedback, [approved.operator, approved.feedbackReadme, approved.feedbackIssues, ...approvedFeedbackForms], 'ご要望');
   checkStaticLinks(notebook, [approved.notebook, approved.streams], 'ノート・配信');
 
   assert.ok(Array.isArray(songs), '楽曲カタログが配列ではありません。');
@@ -87,11 +98,12 @@ export function checkTrustedLinks({index, privacy, notFound, notebook, app, song
 
 export async function readLinkInputs(root = fileURLToPath(new URL('../', import.meta.url))) {
   const read = path => fs.readFile(new URL(path, pathToFileURL(`${root.replace(/\/$/, '')}/`)), 'utf8');
-  const [index, privacy, notFound, notebook, app, catalog] = await Promise.all([
+  const [index, privacy, notFound, feedback, notebook, app, catalog] = await Promise.all([
     read('dist/index.html'), read('dist/privacy/index.html'), read('cloudflare/404.html'),
+    read('dist/feedback/index.html'),
     read('dist/notebook.mjs'), read('dist/app.mjs'), read('dist/songs.json')
   ]);
-  return {index, privacy, notFound, notebook, app, songs: JSON.parse(catalog)};
+  return {index, privacy, notFound, feedback, notebook, app, songs: JSON.parse(catalog)};
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

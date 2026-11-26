@@ -17,6 +17,15 @@
 /privacy/index.html
   Cache-Control: public, max-age=0, must-revalidate
 
+/feedback/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/feedback/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/feedback.css
+  Cache-Control: public, max-age=0, must-revalidate
+
 /songs.json
   Cache-Control: public, max-age=0, must-revalidate
 

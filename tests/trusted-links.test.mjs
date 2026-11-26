@@ -27,11 +27,40 @@ test('another product from the same shop and a changed Powered by destination ar
   const product = copy();
   product.notebook = product.notebook.replace('/items/166793310', '/items/123456');
   assert.throws(() => checkTrustedLinks(product), /商品ページ/);
-  for (const page of ['index', 'privacy', 'notFound']) {
+  for (const page of ['index', 'privacy', 'notFound', 'feedback']) {
     const input = copy();
     input[page] = input[page].replaceAll('https://toma-oshikatsubu.pages.dev/', 'https://toma-oshikatsubu.pages.dev/another-path');
     assert.throws(() => checkTrustedLinks(input), /Powered by/);
   }
+});
+
+test('all footer request links must keep the local feedback guide', () => {
+  for (const page of ['index', 'privacy', 'notFound', 'feedback']) {
+    for (const replacement of ['https://github.com/morikyun/toma-oto-mikuji/issues/new/choose', '/another-guide/']) {
+      const input = copy();
+      input[page] = input[page].replace('href="/feedback/"', `href="${replacement}"`);
+      assert.throws(() => checkTrustedLinks(input), /フッターのご要望リンク/);
+    }
+  }
+});
+
+test('feedback forms reject another repository, changed template, and duplicate template', () => {
+  const originalURL = 'https://github.com/morikyun/toma-oto-mikuji/issues/new?template=01-change.yml';
+  for (const replacement of [
+    originalURL.replace('/toma-oto-mikuji/', '/another-repo/'),
+    originalURL.replace('01-change.yml', 'another-template.yml'),
+    originalURL.replace('01-change.yml', '02-new-page.yml')
+  ]) {
+    const input = copy();
+    input.feedback = input.feedback.replace(originalURL, replacement);
+    assert.throws(() => checkTrustedLinks(input), /承認済みの6種類/);
+  }
+});
+
+test('feedback guide rejects an extra unapproved GitHub destination', () => {
+  const input = copy();
+  input.feedback += '<a href="https://github.com/morikyun/another-repo/issues">依頼を見る</a>';
+  assert.throws(() => checkTrustedLinks(input), /承認済みのリンク先/);
 });
 
 test('an extra unapproved artist link cannot hide beside an approved link', () => {
