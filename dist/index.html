@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101d25">
+  <meta name="description" content="5つの問いと月の光に導かれて、總水とおま・カミムスヒの一曲に出会う音みくじ。音楽の余韻を、願いの言葉へ。">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:title" content="とおまの音みくじ — いまのあなたに、響く一曲を。">
+  <meta property="og:description" content="5つの問いと、月の光。總水とおま・カミムスヒの音楽に出会う、小さな旅。">
+  <link rel="canonical" href="https://toma-oto-mikuji.netlify.app/">
+  <meta property="og:url" content="https://toma-oto-mikuji.netlify.app/">
+  <meta property="og:image" content="https://toma-oto-mikuji.netlify.app/assets/social-card.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="とおまの音みくじ。夜空に光の粒を閉じ込めた、金色のガラガラ。">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <title>とおまの音みくじ — いまのあなたに、響く一曲を。</title>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ</a>
+  <div class="sky-grain" aria-hidden="true"></div>
+  <div class="starfield" aria-hidden="true"></div>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="とおまの音みくじ ホーム">
+        <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21"/><path d="m24 7 3.5 13.5L41 24l-13.5 3.5L24 41l-3.5-13.5L7 24l13.5-3.5Z"/><circle cx="24" cy="24" r="3"/></svg>
+        <span>とおまの音みくじ<small>TOMA · SOUND FORTUNE</small></span>
+      </a>
+      <nav aria-label="メインメニュー">
+        <button class="nav-button" data-action="catalog">楽曲をみる <span aria-hidden="true">↗</span></button>
+        <button class="nav-button about-nav" data-action="about">この音みくじについて</button>
+        <button class="sound-button" data-action="sound" aria-label="演出音をオンにする" aria-pressed="false"><span class="sound-icon" aria-hidden="true">♫</span><span class="sound-label">音 OFF</span></button>
+      </nav>
+    </header>
+    <main id="main" tabindex="-1">
+      <section class="loading-screen"><span class="eyebrow">TOMA · SOUND FORTUNE</span><h1>音との出会いを、準備しています。</h1><p>もう少しだけ、お待ちください。</p></section>
+    </main>
+    <footer class="site-footer"><span>ひとつの音と、月の光。今日の私に、耳をすませる。</span><div class="footer-links"><button data-action="about">このサイトについて</button><a class="footer-policy" href="/privacy/">プライバシーポリシー・Cookie等</a><span class="footer-credit">總水とおま・カミムスヒ 楽曲紹介ファンサイト</span></div><p class="footer-powered">Powered by <a href="https://toma-oshikatsubu.pages.dev/" target="_blank" rel="noopener noreferrer">TOMA推し活部 <span aria-hidden="true">↗</span></a></p></footer>
+  </div>
+  <dialog id="modal" aria-labelledby="modal-title"><div class="modal-shell"><button class="modal-close" aria-label="閉じる" data-action="close-modal">×</button><div id="modal-body"></div></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <noscript><div class="noscript">音みくじを楽しむにはJavaScriptを有効にしてください。<a href="https://www.tunecore.co.jp/artists/tomasource?lang=ja">總水とおまの公式配信ページはこちら</a></div></noscript>
+  <script type="module" src="/app.mjs"></script>
+</body>
+</html>

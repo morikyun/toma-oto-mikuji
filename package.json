@@ -1,0 +1,13 @@
+{
+  "name": "toma-oto-mikuji",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "python3 -m http.server 4173 --bind 127.0.0.1 --directory dist",
+    "notes": "python3 scripts/export-song-notes.py",
+    "prepare:cloudflare": "python3 scripts/prepare-cloudflare.py",
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check dist/app.mjs && node --check dist/engine.mjs && node --check dist/art.mjs && node --check dist/notebook.mjs"
+  }
+}
