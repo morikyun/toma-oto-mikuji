@@ -34,6 +34,14 @@ GitHubの [Settings → Environments](https://github.com/morikyun/toma-oto-mikuj
 
 **Repository secretsには登録しません。** 環境を指定しないPR処理から参照できるようにしないためです。Secretの値はチャット・Issue・PRに書かず、GitHubのSecret欄へ直接登録します。他のリポジトリに登録済みのSecretは読み戻せないため、保管している値を使用するか適切な権限で再発行してください。他のサイトで使うトークンを無断で無効にしないでください。
 
+### ID・トークンの取得と登録の手順
+
+1. [Cloudflareダッシュボード](https://dash.cloudflare.com/)で、音みくじのあるアカウントを開きます。**Workers & Pages → Account Details → Account ID** のコピーボタンでIDを取得します。検索欄で `Copy account ID` を選ぶ方法もあります。[Account IDの公式手順](https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/)
+2. **Manage Account → API Tokens → Create Token → Custom Token / Get started** でトークンを作ります。名前は `toma-oto-mikuji-github-actions` など、用途の分かる名前にします。権限は **Account → Cloudflare Pages → Edit**、対象は音みくじのあるアカウントに限定します。**Continue to summary → Create Token** で表示される値をコピーし、安全な場所に保管してください。値は作成時に一度だけ表示されます。[Cloudflareのトークン作成手順](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/)
+3. GitHubの [Settings → Environments](https://github.com/morikyun/toma-oto-mikuji/settings/environments) から **preview** を開きます。
+4. **Environment secrets → Add secret** を押し、Nameに `CLOUDFLARE_ACCOUNT_ID`、Secretに手順1のIDを貼り付けて保存します。もう一度 **Add secret** を押し、Nameを `CLOUDFLARE_API_TOKEN`、Secretを手順2のトークンにして保存します。
+5. Environmentsへ戻って **production** を開き、同じ2つの名前・値を登録します。合計4件（各環境に2件）です。登録先が **Environment secrets** であることを確認してください。[GitHubの環境Secretの公式手順](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets#creating-secrets-for-an-environment)
+
 プレビューで使うPages編集権限は本番にも影響し得ます。Environmentによる承認待ちで、レビュー前のPRにトークンを渡さない構成です。承認後はPRの処理がトークンを使うため、差分の確認は必要です。[GitHubの環境とSecretの説明](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments)
 
 登録後、PRのActionsが承認待ちならpreviewを承認します。Secret不足で失敗した場合は **Re-run failed jobs** を実行します。保護設定を外して通すことはしません。
