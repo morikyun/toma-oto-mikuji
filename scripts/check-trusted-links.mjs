@@ -2,12 +2,13 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 
-// Approved public destinations as of 2026-11-23. Updating these requires the
+// Approved public destinations as of 2026-11-26. Updating these requires the
 // operator's confirmation; this check complements review, not access control.
 const approved = {
   contact: 'https://forms.gle/Mmrmu9xTuYpot9Dz6',
   notebook: 'https://pienipisara2.thebase.in/items/166793310',
   operator: 'https://toma-oshikatsubu.pages.dev/',
+  feedback: 'https://github.com/morikyun/toma-oto-mikuji/issues/new/choose',
   streams: 'https://www.youtube.com/@TomaSource/streams',
   toma: 'https://www.tunecore.co.jp/artists/tomasource?lang=ja',
   kamimusuhi: 'https://www.tunecore.co.jp/artists/kamimusuhi',
@@ -67,10 +68,10 @@ export function checkTrustedLinks({index, privacy, notFound, notebook, app, song
   for (const url of [approved.toma, approved.kamimusuhi]) {
     assert.ok(anchors(app).some(link => link.href === url), '公式アーティストのリンクが見つかりません。');
   }
-  checkStaticLinks(index, [approved.operator, approved.toma], 'トップ');
+  checkStaticLinks(index, [approved.operator, approved.toma, approved.feedback], 'トップ');
   checkStaticLinks(app, [approved.toma, approved.kamimusuhi], '音みくじ');
-  checkStaticLinks(privacy, [approved.contact, approved.operator, approved.cloudflarePrivacy, approved.cloudflareCookies, approved.googlePrivacy], 'プライバシー');
-  checkStaticLinks(notFound, [approved.operator], '404');
+  checkStaticLinks(privacy, [approved.contact, approved.operator, approved.cloudflarePrivacy, approved.cloudflareCookies, approved.googlePrivacy, approved.feedback], 'プライバシー');
+  checkStaticLinks(notFound, [approved.operator, approved.feedback], '404');
   checkStaticLinks(notebook, [approved.notebook, approved.streams], 'ノート・配信');
 
   assert.ok(Array.isArray(songs), '楽曲カタログが配列ではありません。');
