@@ -1,0 +1,54 @@
+name: 表示がおかしい・うまく動かない
+description: 文字が重なる、抽選が進まない、ボタンやリンクが反応しない箇所を知らせる
+title: '[困っていること] '
+type: Bug
+labels: ['不具合']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        うまく使えないところがあれば、分かる範囲で教えてください。原因を調べたり、専門用語を使ったりする必要はありません。
+        このフォームでは、**Type「Bug（不具合）」**と**ラベル「不具合」**が自動で付きます。
+        上の「タイトル」には、**「[困っていること] スマホで抽選から先に進めない」**のように短く書いてください。
+
+        この内容と添付画像はインターネット上に公開されます。個人情報、パスワード・APIキー・トークン、非公開の資料やアーカイブ、歌詞・記事の全文は載せないでください。画像にも個人情報が写らないようにしてください。
+  - type: input
+    id: page
+    attributes:
+      label: どの画面で困っていますか？
+      description: 画面の名前かURL、結果の曲名、何問目かなどを教えてください。
+      placeholder: 例：5つの質問に答えたあとの抽選画面
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: どんなことが起きましたか？
+      description: 何を押して、どうなると思っていて、実際にはどうなったかを教えてください。
+      placeholder: 例：ガラガラを回したあと、光が動いたままで結果の曲が表示されませんでした。
+    validations:
+      required: true
+  - type: dropdown
+    id: device
+    attributes:
+      label: 何でサイトを見ていましたか？（任意）
+      options:
+        - 分からない
+        - iPhone
+        - Androidのスマートフォン
+        - iPad・その他のタブレット
+        - Windowsのパソコン
+        - Macのパソコン
+        - その他
+      default: 0
+  - type: textarea
+    id: details
+    attributes:
+      label: 画面の画像・補足（任意）
+      description: この欄に画面の画像を貼り付けられます。起きた日時や使っていたアプリ名も、分かれば教えてください。
+      placeholder: 例：今日の夕方にSafariで開きました。もう一度試しても同じことが起きました。
+  - type: markdown
+    attributes:
+      value: |
+        入力できたら、画面下の **「Create（作成）」または「Submit new issue」** を押してください。
+        登録後、運営が確認します。追加で教えていただきたいことがあれば、コメント欄でお聞きします。

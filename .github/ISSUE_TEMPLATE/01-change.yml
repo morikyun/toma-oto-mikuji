@@ -1,0 +1,67 @@
+name: 文章・曲名・リンクを直したい
+description: 曲の紹介文や質問の文章、リンク先を直す、今ある案内に情報を足す
+title: '[修正] '
+type: Task
+labels: ['説明文・案内']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        気づいたことを、いつもの言葉で教えてください。ITの知識は必要ありません。
+        このフォームでは、**Type「Task（作業・対応）」**と**ラベル「説明文・案内」**が自動で付きます。
+        上の「タイトル」には、**「[修正] 結果画面の曲の紹介文を変えたい」**のように短く書いてください。
+        必須の項目だけでも送れます。複数のお願いは、内容ごとに分けると確認しやすくなります。
+
+        この内容と添付画像はインターネット上に公開されます。個人情報、パスワード・APIキー・トークン、非公開の資料やアーカイブ、歌詞・記事の全文は載せないでください。参考資料は公開されている公式ページのURLでお知らせください。
+  - type: dropdown
+    id: page
+    attributes:
+      label: どの画面を直したいですか？
+      description: 近いものを選んでください。
+      options:
+        - トップページ
+        - 5つの質問
+        - 抽選（ガラガラ）
+        - 結果画面・曲の紹介
+        - この曲を、もう少し深く。（曲の解説）
+        - 楽曲一覧・検索
+        - 新月・満月配信と願い事ノートの案内
+        - このサイトについて
+        - プライバシーポリシー
+        - 複数の画面
+        - その他・どの画面か分からない
+    validations:
+      required: true
+  - type: input
+    id: page-url
+    attributes:
+      label: その画面のURL（任意）
+      description: URLは画面上部に表示されるアドレスです。結果画面なら「結果をシェア」でコピーできます。分からなければ空欄で大丈夫です。
+      placeholder: https://toma-oto-mikuji.pages.dev/
+  - type: textarea
+    id: current-part
+    attributes:
+      label: どの部分を直したいですか？
+      description: 曲名、見出し、何問目かなど、場所が分かる情報を教えてください。
+      placeholder: 例：「誓い」の結果画面で、曲の紹介文を直したいです。
+    validations:
+      required: true
+  - type: textarea
+    id: desired-change
+    attributes:
+      label: どう変えたいですか？
+      description: 変更後の文章やリンク、足したい内容を教えてください。文章が決まっていなければ、希望だけでも大丈夫です。
+      placeholder: 例：この曲を初めて知った人にも伝わるように、紹介文をもう少し短くしてほしいです。
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: 参考のURL・画像・補足（任意）
+      description: 公式の作品紹介や配信のURLがあれば教えてください。画像には個人情報が写らないようにしてください。
+      placeholder: 参考になる公開ページのURLや、変更したい理由など
+  - type: markdown
+    attributes:
+      value: |
+        入力できたら、画面下の **「Create（作成）」または「Submit new issue」** を押してください。
+        登録後、運営が内容を確認します。追加で確認したいことがあれば、コメント欄でお聞きします。

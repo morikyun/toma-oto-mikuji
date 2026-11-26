@@ -1,0 +1,59 @@
+name: 見やすく・使いやすくしてほしい
+description: 文字の大きさ、色、配置、質問の選びやすさなどを改善する
+title: '[見やすさ・使いやすさ] '
+type: Feature
+labels: ['見やすさ・使いやすさ', '改善・追加']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        「文字を大きくしてほしい」「目当ての情報を見つけやすくしたい」など、感じたことを教えてください。
+        このフォームでは、**Type「Feature（追加・改善）」**と**ラベル「見やすさ・使いやすさ」「改善・追加」**が自動で付きます。
+        上の「タイトル」には、**「[見やすさ・使いやすさ] 結果画面の説明をもう少し読みやすくしてほしい」**のように短く書いてください。
+
+        この内容と添付画像はインターネット上に公開されます。個人情報、パスワード・APIキー・トークン、非公開の資料やアーカイブ、歌詞・記事の全文は載せないでください。画像にも個人情報が写らないようにしてください。
+  - type: dropdown
+    id: page
+    attributes:
+      label: どの画面を変えたいですか？
+      options:
+        - トップページ
+        - 5つの質問
+        - 抽選（ガラガラ）
+        - 結果画面・曲の紹介
+        - この曲を、もう少し深く。（曲の解説）
+        - 楽曲一覧・検索
+        - 新月・満月配信と願い事ノートの案内
+        - このサイトについて
+        - プライバシーポリシー
+        - 複数の画面・サイト全体
+        - その他・どの画面か分からない
+    validations:
+      required: true
+  - type: textarea
+    id: current-part
+    attributes:
+      label: どの部分が見づらい・使いづらいですか？
+      description: 見出しや曲名、何問目かなど、場所が分かる情報と困っていることを教えてください。
+      placeholder: 例：スマホで見ると、結果画面の曲の解説が小さくて読みづらいです。
+    validations:
+      required: true
+  - type: textarea
+    id: desired-change
+    attributes:
+      label: どう変わると嬉しいですか？
+      description: 希望だけでも大丈夫です。方法が分からなければ「相談したい」と書いてください。
+      placeholder: 例：解説の文字を少し大きくして、行の間も広げてほしいです。
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: 画面のURL・画像・補足（任意）
+      description: URLは画面上部に表示されるアドレスです。画像はこの欄に貼り付けられます。使っていた端末も、分かれば教えてください。
+      placeholder: 例：iPhoneで見ています。
+  - type: markdown
+    attributes:
+      value: |
+        入力できたら、画面下の **「Create（作成）」または「Submit new issue」** を押してください。
+        登録後、運営が内容を確認します。必要があれば、コメント欄でお聞きします。

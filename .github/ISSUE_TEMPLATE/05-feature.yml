@@ -1,0 +1,45 @@
+name: 機能を追加・改善してほしい
+description: 選曲、検索、結果の共有など、音みくじでできることを増やす
+title: '[機能の改善・追加] '
+type: Feature
+labels: ['改善・追加']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        「こんなことができたら便利」という希望を教えてください。作り方を考える必要はありません。
+        このフォームでは、**Type「Feature（追加・改善）」**と**ラベル「改善・追加」**が自動で付きます。
+        上の「タイトル」には、**「[機能の改善・追加] 気に入った曲をあとから見返したい」**のように短く書いてください。
+
+        この内容と添付画像はインターネット上に公開されます。個人情報、パスワード・APIキー・トークン、非公開の資料やアーカイブ、歌詞・記事の全文は載せないでください。参考資料は公開されている公式ページのURLでお知らせください。
+  - type: input
+    id: page
+    attributes:
+      label: どの画面で使いたいですか？
+      description: 画面の名前かURLを書いてください。「サイト全体」「まだ決まっていない」でも大丈夫です。
+      placeholder: 例：結果画面
+    validations:
+      required: true
+  - type: textarea
+    id: desired-feature
+    attributes:
+      label: どんなことができるようになると嬉しいですか？
+      description: 何をすると、どうなるとよいか、いつもの言葉で教えてください。
+      placeholder: 例：気に入った曲に印を付けて、あとからまとめて見返せると嬉しいです。
+    validations:
+      required: true
+  - type: textarea
+    id: reason
+    attributes:
+      label: いま困っていること・便利になる場面（任意）
+      placeholder: 例：前に出会った曲の名前を忘れてしまうので、すぐに探せるようにしたいです。
+  - type: textarea
+    id: references
+    attributes:
+      label: 参考のURL・画像・補足（任意）
+      description: 似た機能がある公開サイトなど、参考になるものがあれば教えてください。画像もこの欄に貼り付けられます。
+  - type: markdown
+    attributes:
+      value: |
+        入力できたら、画面下の **「Create（作成）」または「Submit new issue」** を押してください。
+        登録後、運営が内容を確認し、対応方法を相談します。

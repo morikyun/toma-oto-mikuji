@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: はじめての方へ：登録方法と記入例を読む
+    url: https://github.com/morikyun/toma-oto-mikuji/blob/main/README.md
+    about: どのフォームを選ぶか、何を書くか、順番にご案内します
+  - name: 個人情報の取り扱いに関するお問い合わせ
+    url: https://toma-oto-mikuji.pages.dev/privacy/#contact
+    about: 個人情報を含む相談は、公開のIssueではなく専用フォームをご利用ください
