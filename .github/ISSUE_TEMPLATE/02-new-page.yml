@@ -1,0 +1,66 @@
+name: 新しいページを作ってほしい
+description: まだサイトにない案内ページの提案。アイデアの段階でも大丈夫です
+title: '[新しいページ] '
+type: Feature
+labels: ['改善・追加']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        「こんなページがあると嬉しい」というアイデアを教えてください。ITの知識や、完成した文章は必要ありません。
+        このフォームでは、**Type「Feature（追加・改善）」**と**ラベル「改善・追加」**が自動で付きます。
+        上の「タイトル」には、**「[新しいページ] 音みくじの楽しみ方を紹介したい」**のように短く書いてください。
+        まだ決まっていないところは、「相談したい」と書いても大丈夫です。
+
+        この内容と添付画像はインターネット上に公開されます。個人情報、パスワード・APIキー・トークン、非公開の資料やアーカイブ、歌詞・記事の全文は載せないでください。参考資料は公開されている公式ページのURLでお知らせください。
+  - type: input
+    id: page-name
+    attributes:
+      label: どんなページを作りたいですか？
+      description: ページの名前やテーマを教えてください。仮の名前で大丈夫です。
+      placeholder: 例：音みくじの楽しみ方
+    validations:
+      required: true
+  - type: textarea
+    id: purpose
+    attributes:
+      label: どんな人に、何を伝えたいですか？
+      placeholder: 例：とおまさんの音楽を初めて知った人に、曲との出会い方を紹介したいです。
+    validations:
+      required: true
+  - type: textarea
+    id: content
+    attributes:
+      label: ページに載せたい内容を教えてください
+      description: 箇条書きや思いついたことだけでも大丈夫です。詳しい内容は、あとから相談できます。
+      placeholder: |
+        例：
+        ・質問に答えるときのヒント
+        ・結果の曲を聴く方法
+        ・出会った曲を友だちに紹介する方法
+    validations:
+      required: true
+  - type: dropdown
+    id: entry-point
+    attributes:
+      label: どこから新しいページを開けるとよさそうですか？（任意）
+      options:
+        - まだ決まっていない・相談したい
+        - トップページから
+        - 質問の画面から
+        - 結果画面から
+        - 楽曲一覧から
+        - ページの下の案内（フッター）から
+        - その他（下の補足欄に書きます）
+      default: 0
+  - type: textarea
+    id: references
+    attributes:
+      label: 参考のURL・画像・補足（任意）
+      description: 参考にしたい公開ページや、ご自身が公開してよい文章・画像があれば添えてください。
+      placeholder: 参考サイトのURL、載せたい内容、希望する雰囲気など
+  - type: markdown
+    attributes:
+      value: |
+        入力できたら、画面下の **「Create（作成）」または「Submit new issue」** を押してください。
+        登録後、運営が内容を確認し、ページの内容や作成について相談します。

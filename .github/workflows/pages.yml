@@ -1,0 +1,138 @@
+name: Website checks and Cloudflare Pages
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    name: Build and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+      - run: npm run check
+      - run: npm test
+      - run: npm run prepare:cloudflare
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: website-${{ github.sha }}
+          path: cloudflare-pages/
+          if-no-files-found: error
+          retention-days: 7
+
+  preview:
+    name: Deploy preview
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      deployments: write
+    environment:
+      name: preview
+      url: ${{ steps.deploy.outputs.deployment-url }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: website-${{ github.sha }}
+          path: cloudflare-pages/
+      - name: Check existing Cloudflare project
+        id: settings
+        run: node scripts/cloudflare-deploy-check.mjs
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          DEPLOY_TARGET: preview
+          PREVIEW_BRANCH: pr-${{ github.event.pull_request.number }}
+      - name: Publish preview
+        id: deploy
+        uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4.168.0'
+          command: pages deploy cloudflare-pages --project-name=toma-oto-mikuji --branch=${{ steps.settings.outputs.branch }} --commit-hash=${{ github.event.pull_request.head.sha }} --commit-dirty=true
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: Link to preview
+        env:
+          PREVIEW_URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: |
+          printf '## 確認用サイト\n\n[プレビューを開く](%s)\n\n本番公開は、このPRをもりきゅんさんがマージした後です。\n' "$PREVIEW_URL" >> "$GITHUB_STEP_SUMMARY"
+
+  production:
+    name: Deploy production
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.actor == 'morikyun'
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: read
+      deployments: write
+    environment:
+      name: production
+      url: https://toma-oto-mikuji.pages.dev/
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Verify owner-approved merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr_number=$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '.[] | select(.merged_at != null and .base.ref == "main") | .number' | head -n 1)
+          if [ -z "$pr_number" ]; then
+            echo 'Production requires a merged pull request.' >&2
+            exit 1
+          fi
+          gh api "repos/$GITHUB_REPOSITORY/pulls/$pr_number" --jq '{sha: .merge_commit_sha, merger: .merged_by.login, merged: .merged, base: .base.ref}' > "$RUNNER_TEMP/merge.json"
+          jq -e --arg sha "$GITHUB_SHA" '.merged == true and .sha == $sha and .merger == "morikyun" and .base == "main"' "$RUNNER_TEMP/merge.json" > /dev/null
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: website-${{ github.sha }}
+          path: cloudflare-pages/
+      - name: Check existing Cloudflare project
+        id: settings
+        run: node scripts/cloudflare-deploy-check.mjs
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          DEPLOY_TARGET: production
+      - name: Publish production
+        uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4.168.0'
+          command: pages deploy cloudflare-pages --project-name=toma-oto-mikuji --branch=${{ steps.settings.outputs.branch }} --commit-hash=${{ github.sha }} --commit-dirty=true
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: Confirm public pages
+        run: |
+          curl --fail --silent --show-error --retry 3 --output /dev/null https://toma-oto-mikuji.pages.dev/
+          curl --fail --silent --show-error --retry 3 --output /dev/null https://toma-oto-mikuji.pages.dev/privacy/
+          printf '## 公開完了\n\n[本番サイトを開く](https://toma-oto-mikuji.pages.dev/)\n\nCommit: `%s`\n' "$GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"

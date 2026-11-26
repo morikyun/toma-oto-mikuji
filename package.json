@@ -8,6 +8,6 @@
     "notes": "python3 scripts/export-song-notes.py",
     "prepare:cloudflare": "python3 scripts/prepare-cloudflare.py",
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check dist/app.mjs && node --check dist/engine.mjs && node --check dist/art.mjs && node --check dist/notebook.mjs"
+    "check": "node --check dist/app.mjs && node --check dist/engine.mjs && node --check dist/art.mjs && node --check dist/notebook.mjs && node --check scripts/cloudflare-deploy-check.mjs && node scripts/check-trusted-links.mjs"
   }
 }
